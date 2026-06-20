@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Joker - Box</title>
+        <link rel="stylesheet" href="assets/css/app.css">
+    </head>
+    <body class="with-menubar">
+
+        <!--
+            JOKER BOX — All game screens live in this one file.
+            Only the screen with class "active" is visible.
+
+            Flow: Home → Height Reward → Magic Box → Flip Cards → Claim Win → Home
+            Navigate with data-screen="screen-id" on links/buttons.
+        -->
+
+        <!-- Screen 1: Home — menu list; tap "Joker Box" to start the game -->
+        <main id="screen-home" class="main-app home-bg game-screen">
+            <div class="home-content">
+                <div class="top-wrapper">
+                    <div class="container">
+                        <div class="logo-wrap">
+                            <a href="#"><img src="assets/images/4d-joker.png" alt=""></a>
+                            <div class="logo-text">
+                                <h2>100000JK</h2>
+                                <p>10,451 points</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-wrapper">
+                    <div class="lucky-list">
+                        <ul>
+                            <li><a href="#">
+                                <p><img src="assets/images/Lucky Spin.png" alt=""> Lucky Spin</p>
+                                <span class="arrow-right"><img src="assets/images/arrow-right.png" alt=""></span>
+                            </a></li>
+                            <li><a href="#">
+                                <p><img src="assets/images/Redeem Store.png" alt=""> Redm Store</p>
+                                <span class="arrow-right"><img src="assets/images/arrow-right.png" alt=""></span>
+                            </a></li>
+                            <li><a href="">
+                                <p><img src="assets/images/4d-joker.png" alt=""> 4D Future</p>
+                                <span class="arrow-right"><img src="assets/images/arrow-right.png" alt=""></span>
+                            </a></li>
+                            <li><a href="#" class="joker-bok-link" data-screen="screen-height-reward" data-with-sound="true">
+                                <p><img src="assets/images/Joker Box.png" alt=""> Joker Box</p>
+                                <span class="arrow-right"><img src="assets/images/arrow-right.png" alt=""></span>
+                            </a></li>
+                            <li><a href="#">
+                                <p><img src="assets/images/Commission Summary.png" alt=""> Commission Summary</p>
+                                <span class="arrow-right"><img src="assets/images/arrow-right.png" alt=""></span>
+                            </a></li>
+                            <li><a href="history.html">
+                                <p><img src="assets/images/History.png" alt=""> History</p>
+                                <span class="arrow-right"><img src="assets/images/arrow-right.png" alt=""></span>
+                            </a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="menubar">
+                <img src="assets/images/menu-screen.png" alt="">
+            </div>
+        </main>
+
+        <!-- Screen 2: Height Reward — select J-O-K-E-R, then tap OPEN NOW -->
+        <main id="screen-height-reward" class="main-app joker-bg game-screen">
+            <video id="myVideo" class="video-bg" loop playsinline muted>
+                <source src="assets/video/Main-Page.mp4" type="video/mp4">
+            </video>
+            <div class="claim-now-content">
+                <div class="claim-wrap">
+                    <div class="content-top">
+                        <a class="question-icon" href="#" data-screen="screen-home" aria-label="Help"><img src="assets/images/question-icon.png" alt=""></a>
+                        <a class="close_icon" href="#" data-screen="screen-home" aria-label="Close"><img src="assets/images/close.png" alt=""></a>
+                        <div class="claim-now-title">
+                            <img class="joker-box-img" src="assets/images/joker-box.png" alt="">
+                        </div>
+                        <div class="reward-info">
+                            <span>Height Reward</span>
+                            <img src="assets/images/title-shp.png" alt="">
+                        </div>
+                        <div class="reward-score">
+                            <img src="assets/images/rm-bg.png" class="rm-bg" alt="">
+                            <h3><img src="assets/images/crown.png" alt=""> RM 8888</h3>
+                        </div>
+                    </div>
+                    <div class="content-bottom">
+                        <div class="select-joker">
+                            <button type="button" aria-label="Select letter J"><img src="assets/images/layer-bg.png" alt=""> <h3>J</h3></button>
+                            <button type="button" aria-label="Select letter O"><img src="assets/images/layer-bg.png" alt=""> <h3>O</h3></button>
+                            <button type="button" aria-label="Select letter K"><img src="assets/images/layer-bg.png" alt=""> <h3>K</h3></button>
+                            <button type="button" aria-label="Select letter E"><img src="assets/images/layer-bg.png" alt=""> <h3>E</h3></button>
+                            <button type="button" aria-label="Select letter R"><img src="assets/images/layer-bg.png" alt=""> <h3>R</h3></button>
+                        </div>
+                        <div class="chance-heading">
+                            <img src="assets/images/choice-bg.png" alt="">
+                            <span>Today's Chance : 1</span>
+                        </div>
+                        <div class="claim-now-button">
+                            <a class="open-button" href="#" data-screen="screen-magic-box">
+                                <img src="assets/images/btn-bg.png" alt="">
+                                <span>OPEN NOW</span>
+                            </a>
+                        </div>
+                        <div class="claim-now-footer">
+                            <a href="history.html"><img src="assets/images/watch.png" alt=""> Reward history</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Screen 3: Magic Box — 3-step intro video; tap video or "skip" to continue -->
+        <main id="screen-magic-box" class="main-app claim-now-main game-screen">
+            <div class="claim-now-content">
+                <a href="#" class="magic-wrapper">
+                    <div class="magic-video">
+                        <div class="video-step">
+                            <video class="video-bg step-1-video" preload="auto" playsinline>
+                                <source src="assets/video/Effect-01.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="video-step">
+                            <video class="video-bg magic-step-video" preload="auto" playsinline>
+                                <source src="assets/video/step-3.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                    </div>
+                </a>
+                <a href="#" class="skip-button" data-screen="screen-flip-card">Tap anywhere to skip</a>
+            </div>
+        </main>
+
+        <!-- Screen 4: Flip Cards — tap each card, then tap screen twice to reveal win -->
+        <main id="screen-flip-card" class="main-app cards-main game-screen">
+            <video class="video-bg" id="myVideoTwo" autoplay loop playsinline muted>
+                <source src="assets/video/background.mp4" type="video/mp4">
+            </video>
+            <div class="flip-cards-wrapper full-height">
+                <div class="card-box">
+                    <div class="flip-cards-wrap">
+                        <div class="flip-card-single">
+                            <div class="card-front">
+                                <img src="assets/images/card-front-j.png" alt="">
+                            </div>
+                            <div class="card-back">
+                                <img src="assets/images/flip-1.png" alt="">
+                                <h2>R</h2>
+                            </div>
+                        </div>
+                        <div class="flip-card-single">
+                            <div class="card-front">
+                                <img src="assets/images/card-front-o.png" alt="">
+                            </div>
+                            <div class="card-back">
+                                <img src="assets/images/flip-1.png" alt="">
+                                <h2>M</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-cards-wrap">
+                        <div class="flip-card-single">
+                            <div class="card-front">
+                                <img src="assets/images/card-front-k.png" alt="">
+                            </div>
+                            <div class="card-back">
+                                <img src="assets/images/flip-2.png" alt="">
+                                <h2>8</h2>
+                            </div>
+                        </div>
+                        <div class="flip-card-single">
+                            <div class="card-front">
+                                <img src="assets/images/card-front-e.png" alt="">
+                            </div>
+                            <div class="card-back">
+                                <img src="assets/images/flip-3.png" alt="">
+                                <h2>1</h2>
+                            </div>
+                        </div>
+                        <div class="flip-card-single">
+                            <div class="card-front">
+                                <img src="assets/images/card-front-r.png" alt="">
+                            </div>
+                            <div class="card-back">
+                                <img src="assets/images/flip-4.png" alt="">
+                                <h2>9</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="skip-button">Tap each card to see result</a>
+            </div>
+        </main>
+
+        <!-- Screen 5: Claim Win — tap Claim Now to return home -->
+        <main id="screen-claim-win" class="main-app claim-now-main claim-win game-screen">
+            <video class="video-bg video-win-bg" autoplay loop muted playsinline>
+                <source src="assets/video/background.mp4" type="video/mp4">
+            </video>
+            <div class="claim-now-content">
+                <div class="claim-wrap">
+                    <a class="close_icon" href="#" data-screen="screen-home" aria-label="Close"><img src="assets/images/close.png" alt=""></a>
+                    <a class="question-icon" href="#" data-screen="screen-home" aria-label="Help"><img src="assets/images/question-icon.png" alt=""></a>
+                    <div class="claim-now-title">
+                        <img src="assets/images/win-text.png" alt="">
+                    </div>
+                    <div class="claim-now-box">
+                        <h3 class="text-gradient-two">RM</h3>
+                        <h2 class="text-gradient-two">0819</h2>
+                        <img class="box-bg" src="assets/images/win-reward.png" alt="">
+                    </div>
+                    <div class="claim-button">
+                        <a href="#" data-screen="screen-home">
+                            <img src="assets/images/btn-bg.png" alt="">
+                            <span>Claim Now</span>
+                        </a>
+                    </div>
+                    <div class="claim-now-footer">
+                        <a href="history.html"><img src="assets/images/watch.png" alt=""> Reward history</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Shared sound effects (used across flip-card and claim-win screens) -->
+        <audio id="cardSound" src="assets/video/card-click-solund.wav" preload="auto"></audio>
+        <audio id="winSound" src="assets/video/win-sound.mp3" preload="auto"></audio>
+
+        <script src="assets/js/app.js"></script>
+    </body>
+</html>

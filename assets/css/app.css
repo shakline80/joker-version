@@ -1,0 +1,967 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&display=swap');
+.f{
+    font-family: "Libre Baskerville", serif;
+
+}
+html, body{
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    background: #040302;
+    font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 140%;
+    color: #fff;
+    font-weight: normal;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+}
+body.dark-bg {
+    overflow: auto;
+}
+.container{
+    padding: 0 25px;
+}
+img{
+    width: 100%;
+}
+ul{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+a{
+    text-decoration: none;
+    color: inherit;
+}
+button{
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+h1, h2, h3, h4, h5, h6{
+    margin-bottom: 10px;
+    line-height: 110%;
+}
+h1{
+    font-size: 40px;
+}
+h2{
+    font-size: 32px;
+}
+h3{
+    font-size: 28px;
+}
+h4{
+    font-size: 24px;
+}
+h5{
+    font-size: 20px;
+}
+h6{
+    font-size: 18px;
+}
+
+.main-app{
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    height: 100%;
+    overflow: hidden;
+    background-color: #040302;
+}
+
+/* Suppress transitions on initial page load */
+.no-transition {
+    transition: none !important;
+}
+
+/* Single-page game — all screens sit stacked; opacity crossfade only, zero movement */
+.game-screen {
+    display: block;
+    position: fixed;
+    inset: 0;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 410px;
+    height: 100vh;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: 1;
+    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                visibility 0s linear 0.6s;
+}
+
+.game-screen.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    z-index: 10;
+    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                visibility 0s linear 0s;
+}
+
+.game-screen.leaving {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: 9;
+    transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                visibility 0s linear 0.45s;
+}
+
+/* Screen 2 (height-reward) video pre-warms: keep it invisible but rendered
+   so it's already decoded when the screen fades in */
+#screen-height-reward #myVideo {
+    opacity: 0;
+    transition: opacity 0.4s ease 0.1s;
+}
+#screen-height-reward.active #myVideo {
+    opacity: 1;
+}
+.home-bg{
+    background-image: url(../images/bg-home.jpg);
+    background-size: cover;
+    background-position: center;
+}
+.menubar {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 9;
+}
+.logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.logo-wrap a {
+    display: inline-block;
+}
+.logo-wrap img {
+    width: 75px;
+}
+.logo-text h2 {
+    color: #fff;
+    font-size: 24px;
+    font-weight: normal;
+    line-height: 100%;
+    margin-bottom: 5px;
+}
+.logo-text p {
+    color: #fdbf14;
+    font-size: 14px;
+    font-weight: normal;
+}
+.home-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    gap: 15px;
+}
+.with-menubar .main-app {
+    padding-bottom: 130px;
+}
+.content-wrapper {
+    height: 100%;
+    padding: 0 25px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+.lucky-list {
+    width: 100%;
+    margin-bottom: 40px;
+}
+.top-wrapper {
+    padding: 20px 0;
+    flex-shrink: 1;
+}
+.lucky-list ul li img {
+    width: 50px;
+}
+
+.lucky-list ul li p {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.lucky-list ul li a {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: space-between;
+}
+.lucky-list ul li {
+    font-size: 16px;
+    padding: 12px 0 !important;
+    border-bottom: 1px solid #fff;
+}
+span.arrow-right img {
+    width: 32px !important;
+}
+
+
+.history-main{
+    background-color: #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+}
+.dark-bg{
+    background: #111;
+}
+.history-content{
+    padding: 25px;
+}
+.history-title {
+    display: flex;
+    align-items: center;
+    gap: 15px 30px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.history-title img {
+    width: 32px;
+}
+.history-title h4 {
+    font-size: 20px;
+    text-transform: uppercase;
+    font-weight: normal;
+    letter-spacing: .3px;
+    margin-bottom: 7px;
+}
+.reward-box {
+    padding: 20px 25px;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* margin-bottom: 15px; */
+}
+.box-shp-bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+.reward-box h4 {
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: 500;
+    display: inline-block;
+}
+.reward-box h2 {
+    font-size: 40px;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 110%;
+    display: inline-block;
+}
+
+.text-gradient {
+    font-size: 180px;
+    font-weight: 800;
+    font-family: Arial, sans-serif;
+  
+    background: linear-gradient(
+        to bottom,
+        #ffffff 5%,
+        #faf7e8 40%,
+        #efe6b3 75%,
+        #e4d68a 100%
+      );
+  
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+  }
+
+
+  /* Reset & Base Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  
+ 
+  
+  /* Container */
+  .rewards-container {
+    background-color: #000000;
+    width: 100%;
+    max-width: 450px;
+    padding:15px 0;
+    border-radius: 5px;
+  }
+  
+  /* Filter Tabs */
+  .filter-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .tab-btn {
+    flex: 1;
+    background: transparent;
+    border: 1px solid #e7a527;
+    border-radius: 6px;
+    color: #e7a527;
+    padding: 10px 0;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .tab-btn.active {
+    background: linear-gradient(180deg, #e7a527 0%, #b28731 100%);
+    color: #000000;
+    border: none;
+    padding: 11px 0; /* Adjust for missing border to keep layout stable */
+  }
+  
+  /* Table Layout */
+  .rewards-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+  }
+  
+  .rewards-table th {
+    color: #e7a527;
+    font-size: 154x;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #fff;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+  
+  .rewards-table td {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 9px;
+    border-bottom: 1px solid #fff;
+  }
+  
+  .rewards-table tr:last-child td {
+    border-bottom: 1px solid #fff;
+  }
+  
+  .reward-amount {
+    font-weight: 500;
+  }
+  
+  /* Utilities */
+  .text-left { text-align: left; }
+  .text-right { text-align: right; }
+  
+  /* Pagination */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    margin-top: 16px;
+  }
+  
+  .nav-btn {
+    background: transparent;
+    border: 1px solid #e7a527;
+    border-radius: 4px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .nav-btn:hover {
+    background-color: rgba(209, 153, 50, 0.1);
+  }
+  
+  .nav-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: #e7a527;
+  }
+  
+  .page-indicator {
+    color: #e7a527;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  table.rewards-table tbody tr:last-child td {
+    border: none;
+}
+span.time-text {
+    padding-left: 10px;
+}
+
+
+.main-app{
+    z-index: 1;
+}
+#myVideo {
+    object-fit: contain !important;
+    object-position: top;
+}
+.video-bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    object-fit:cover;
+}
+.claim-now-content {
+    padding: 25px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+}
+.claim-now-title img {
+    width: 200px;
+    margin: 0 auto;
+}
+.claim-now-title {
+    margin-bottom: 10px;
+    text-align: center;
+
+}
+.claim-now-box {
+    position: relative;
+    z-index: 1;
+    padding: 40px 15px;
+}
+.claim-now-box {
+    position: relative;
+    z-index: 1;
+    gap: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    max-width: 300px;
+    margin: 0 auto;
+    margin-bottom: 25px;
+}
+.claim-now-box .box-bg{
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    top: 0;
+}
+
+.claim-now-box h3 {
+    font-family: "Libre Baskerville", serif;
+    font-size: 60px;
+    line-height: 50px;
+    margin-bottom: 0;
+    display: inline-block;
+}
+.claim-now-box h2 {
+    font-family: "Libre Baskerville", serif;
+    font-size: 110px;
+    line-height: 80px;
+    margin-bottom: 0px;
+    display: inline-block;
+}
+.claim-wrap {
+    width: 100%;
+}
+.text-gradient-two {
+    letter-spacing: -2px;
+    line-height: 1;
+    position: relative;
+  
+    /* 3-Step Premium Gold Gradient (Light top, rich mid-tone, deeper gold base) */
+    background: linear-gradient(
+      to bottom, 
+      #ffe8a3 0%, 
+      #f2c46d 35%, 
+      #e4a840 65%, 
+      #b8791b 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  
+    /* Gives the text its heavy, distinct pop against the dark backdrop */
+    filter: 
+      drop-shadow(-2px -2px 0px rgba(0, 0, 0, 0.6)) /* Inner-shadow illusion */
+      drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.8));  /* Deep drop shadow */
+  }
+  .claim-now-button a {
+    width: 280px;
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    color: #000;
+}
+.claim-now-button {
+    margin-bottom: 15px;
+}
+.claim-now-button a img {
+    width: 100%;
+    height: 60px;
+}
+.claim-now-button span {
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    font-size: 25px;
+    padding-bottom: 5px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.claim-now-footer a {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+.claim-now-footer a img {
+    width: 20px;
+}
+
+.cards-main {
+    background-image: url(../images/background-1.png);
+    background-position: center;
+    background-size: cover;
+}
+
+/* Animation — card box fades in when flip screen opens */
+.full-height{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+
+
+
+/* Container layout for rows */
+
+.flip-cards-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+.flip-card-single {
+    width: 100px;
+    height: 164px;
+    position: relative;
+    cursor: pointer;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.1, 1);
+    touch-action: manipulation;
+    user-select: none;
+}
+  
+  /* Trigger rotation class */
+  .flip-card-single.is-flipped {
+    transform: rotateY(180deg);
+  }
+  
+  /* Front & Back basic setups */
+  .card-front, 
+  .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    backface-visibility: hidden; 
+    -webkit-backface-visibility: hidden;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  }
+  
+  .card-front img, 
+  .card-back img {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .card-front {
+    z-index: 2; 
+  }
+  
+  .card-back {
+    transform: rotateY(180deg); 
+    position: relative; 
+  }
+  
+  /* Center text (R, M, 8, 1, 9) inside the cards */
+  .card-back h2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    font-family: "Libre Baskerville", serif;
+  }
+  .card-back h2 {
+    font-size: 60px;
+    color: #000;
+    margin-top: -22px;
+    font-family: "Libre Baskerville", serif;
+}
+img.joker-box-img{
+    width: 160px;
+}
+.chance-heading {
+    width: 200px;
+    margin: 0 auto;
+    margin-bottom: 5px;
+    position: relative;
+    z-index: 1;
+}
+.chance-heading img {
+    width: 100%;
+    height: 38px;
+    z-index: -1;
+}
+.chance-heading span {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    padding-bottom: 8px;
+}
+
+.select-joker {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.select-joker button {
+    width: 52px;
+    position: relative;
+    z-index: 1;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: .3s;
+}
+.select-joker button img {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    transition: .3s;
+    filter: grayscale(1);
+}
+.select-joker button.selected img {
+    filter: unset;
+}
+
+
+.select-joker button h3{
+    margin: 0;
+    font-family: "Libre Baskerville", serif;
+    font-size: 26px;
+    text-transform: uppercase;
+    transition: .3s;
+    color: #000;
+}
+.select-joker .selected h3 {
+    color: #fff !important;
+}
+.joker-bg-img {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+.joker-bg .claim-wrap {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    padding:10px 0;
+}
+.reward-info {
+    position: relative;
+    z-index: 1;
+}
+.reward-info img {
+    width: 220px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+.reward-info span {
+    display: inline-block;
+    text-align: center;
+    font-size: 13px;
+    font-weight: normal;
+    text-transform: uppercase;
+}
+.reward-score h3 img {
+    width: 32px;
+}
+.reward-score{
+    position: relative;
+    z-index: 1;
+    width: 280px;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+.reward-score h3 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 32px;
+    margin: 0;
+    line-height: 90%;
+    text-transform: uppercase;
+}
+img.rm-bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+
+.video-step{
+    display:none;
+  }
+  
+  .video-step.active{
+    display:block;
+  }
+
+
+  .card-box {
+    /* no extra animation — screen fade handles the entrance */
+  }
+
+.claim-button a {
+    width: 310px;
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    color: #000;
+}
+.claim-button {
+    margin-bottom: 15px;
+}
+.claim-button a img {
+    width: 100%;
+    height: 65px;
+}
+.claim-button span {
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    font-size: 25px;
+    padding-bottom: 5px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+
+
+ 
+.claim-now-button a {
+    pointer-events: none;
+}
+
+.claim-now-button img {
+    filter: grayscale(1);
+    transition: 0.3s ease;
+}
+
+.claim-now-button a.active {
+    pointer-events: auto;
+    opacity: 1;
+}
+
+.claim-now-button a.active img {
+    filter: none;
+}
+.question-icon{
+    display: inline-block;
+    width: 36px;
+    position: absolute;
+    z-index: 9;
+    top: 0px;
+    left: -15px;
+}
+.content-top{
+    position: relative;
+}
+a.close_icon {
+    width: 36px;
+    display: inline-block;
+    right: -15px;
+    top: 3px;
+    position: absolute;
+    z-index: 9;
+}
+.claim-win{
+    background-image: url(../images/background-1.png);
+    background-size: cover;
+    background-position: center;
+}
+.skip-button{
+    display: block;
+    left: 0%;
+    bottom: 50px;
+    position: absolute;
+    text-transform: uppercase;
+    z-index: 99;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .4px;
+    color: #de9a12;
+    opacity: .6;
+    text-align: center;
+    width: 100%;
+}
+
+.magic-wrapper{
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    cursor: normal;
+}
+
+
+.video-bg {
+    transform-origin: center;
+  }
+  
+  .animate__headShakeZoom {
+    animation: shakeZoomBalanced 1s ease-in-out;
+  }
+  
+  @keyframes shakeZoomBalanced {
+    0% {
+      transform: scale(1);
+    }
+  
+    20% {
+      transform: scale(1.02) translateX(-3px);
+    }
+  
+    40% {
+      transform: scale(1.04) translateX(3px);
+    }
+  
+    60% {
+      transform: scale(1.02) translateX(-2px);
+    }
+  
+    80% {
+      transform: scale(1.01) translateX(1px);
+    }
+  
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .claim-win a.close_icon {
+    right: 8%;
+    top: 14%;
+}
+.claim-win .question-icon {
+    top: 14%;
+    left: 8%;
+}
+
+
+.bg-music{
+    opacity: 0;
+    visibility: hidden;
+    position: fixed;
+    z-index: -99;
+}
+
+.card-box {
+    transition: .3s;
+    transform: scale(1.05);
+    padding-top: 30px;
+}
