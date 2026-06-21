@@ -83,11 +83,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * Crossfade to a new screen. Outgoing fades out while incoming fades in.
-   * Videos on the incoming screen are started one frame before the fade
-   * so they have decoded frames ready — no black flash.
-   * @param {string} screenId
-   * @param {{ withSound?: boolean }} options
+   * Crossfade screens. For the magic→flipcard transition, screen 4 is
+   * made visible first (z-index 10) then screen 3 fades out behind it —
+   * both overlap at the same position so the card area looks continuous.
    */
   function showScreen(screenId, options = {}) {
     if (screenId === currentScreen) return;
@@ -99,48 +97,70 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextScreen = document.getElementById(screenId);
     if (!nextScreen) return;
 
+    const fromMagicToFlip = (currentScreen === SCREENS.magicBox && screenId === SCREENS.flipCard);
+
     currentScreen = screenId;
 
-    // Pre-start any video on the incoming screen one frame early
-    // so the decoder has frames ready when opacity starts rising
     requestAnimationFrame(() => {
       if (screenId === SCREENS.heightReward) {
         const v = document.getElementById('myVideo');
         if (v) { v.muted = !(options.withSound); v.currentTime = 0; v.play().catch(() => {}); }
       }
 
-      // Mark outgoing — fades out
-      if (outgoing) {
-        outgoing.classList.remove('active');
-        outgoing.classList.add('leaving');
-        outgoing.addEventListener('transitionend', () => {
-          outgoing.classList.remove('leaving');
-        }, { once: true });
-      }
+      if (fromMagicToFlip) {
+        // Screen 4 activates immediately at z-index 10 (cards visible)
+        nextScreen.classList.add('active');
+        initFlipCardVideo();
+        winStage = 0;
 
-      // Mark incoming — fades in
-      nextScreen.classList.add('active');
-      document.body.classList.toggle('with-menubar', screenId === SCREENS.home);
+        // Screen 3 fades out behind screen 4 — seamless overlap
+        if (outgoing) {
+          outgoing.classList.remove('active');
+          outgoing.classList.add('leaving');
+          outgoing.addEventListener('transitionend', () => {
+            outgoing.classList.remove('leaving');
+          }, { once: true });
+        }
+      } else {
+        // Normal crossfade for all other screen transitions
+        if (outgoing) {
+          outgoing.classList.remove('active');
+          outgoing.classList.add('leaving');
+          outgoing.addEventListener('transitionend', () => {
+            outgoing.classList.remove('leaving');
+          }, { once: true });
+        }
 
-      switch (screenId) {
-        case SCREENS.home:
-          resetGameState();
-          break;
-        case SCREENS.heightReward:
-          // video already started above; just handle sound state
-          initHeightRewardVideo(Boolean(options.withSound));
-          break;
-        case SCREENS.magicBox:
-          startMagicSequence();
-          break;
-        case SCREENS.flipCard:
-          winStage = 0;
-          initFlipCardVideo(Boolean(options.withSound));
-          break;
-        case SCREENS.claimWin:
-          playWinSound();
-          nextScreen.querySelector('.video-win-bg')?.play().catch(() => {});
-          break;
+        nextScreen.classList.add('active');
+        document.body.classList.toggle('with-menubar', screenId === SCREENS.home);
+
+        switch (screenId) {
+          case SCREENS.home:
+            resetGameState();
+            break;
+          case SCREENS.heightReward:
+            initHeightRewardVideo(Boolean(options.withSound));
+            break;
+          case SCREENS.magicBox:
+            startMagicSequence();
+            break;
+          case SCREENS.flipCard:
+            winStage = 0;
+            initFlipCardVideo();
+            break;
+          case SCREENS.claimWin:
+            playWinSound();
+            const winVideo = nextScreen.querySelector('.video-win-bg');
+            if (winVideo) {
+              winVideo.muted = false;
+              winVideo.currentTime = 0;
+              winVideo.play().catch(() => {
+                winVideo.muted = true;
+                winVideo.play().catch(() => {});
+              });
+            }
+            break;
+        }
       }
     });
   }
@@ -155,7 +175,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     flipCardScreen?.querySelectorAll('.flip-card-single').forEach(card => {
       card.classList.remove('is-flipped');
+      card.style.animation = ''; // restore entrance animation for next round
     });
+
+    // Reset entrance wrap animations so they replay next round
+    flipCardScreen?.querySelectorAll('.card-entrance-wrap').forEach(wrap => {
+      wrap.style.animation = 'none';
+      requestAnimationFrame(() => { wrap.style.animation = ''; });
+    });
+
+    // Remove active from flip screen so card-box opacity resets for next entry
+    document.getElementById(SCREENS.flipCard)?.classList.remove('active');
 
     document.querySelectorAll('#screen-magic-box .video-step').forEach(step => {
       step.classList.remove('active');
@@ -176,64 +206,42 @@ document.addEventListener('DOMContentLoaded', () => {
     video.play().catch(() => {});
   }
 
-  /** Play step-1 → step-2 → step-3, then go to flip cards. */
+  /** Play the magic box video, then go to flip cards. */
   function startMagicSequence() {
     const sequenceId = magicSequenceId + 1;
     magicSequenceId = sequenceId;
 
     const steps = document.querySelectorAll('#screen-magic-box .video-step');
-    const videos = document.querySelectorAll('#screen-magic-box .video-bg');
+    const video = document.querySelector('#screen-magic-box .step-1-video');
 
-    function playStep(index) {
-      if (sequenceId !== magicSequenceId || currentScreen !== SCREENS.magicBox) return;
+    if (!video) return;
 
-      steps.forEach(step => step.classList.remove('active'));
-      steps[index]?.classList.add('active');
+    // Show the step
+    steps.forEach(s => s.classList.remove('active'));
+    steps[0]?.classList.add('active');
 
-      const video = videos[index];
-      if (!video) return;
+    video.currentTime = 0;
+    video.playbackRate = MAGIC_PLAYBACK_RATE;
+    video.play().catch(() => {});
 
-      video.currentTime = 0;
-      video.playbackRate = MAGIC_PLAYBACK_RATE;
-      video.play().catch(() => {});
-
-      video.onended = () => {
-        if (sequenceId !== magicSequenceId) return;
-
-        if (index < videos.length - 1) {
-          playStep(index + 1);
-        } else {
-          showScreen(SCREENS.flipCard);
-        }
-      };
-    }
-
-    videos.forEach(video => {
-      video.playbackRate = MAGIC_PLAYBACK_RATE;
-    });
-
-    playStep(0);
+    video.onended = () => {
+      if (sequenceId !== magicSequenceId) return;
+      showScreen(SCREENS.flipCard);
+    };
   }
 
-  /** Flip card background video — sound enabled when user taps magic wrapper. */
-  function initFlipCardVideo(withSound) {
+  /** Flip card background video — always plays with sound (user already tapped). */
+  function initFlipCardVideo() {
     const video = document.getElementById('myVideoTwo');
     if (!video) return;
 
-    video.muted = !withSound;
+    video.muted = false;
     video.currentTime = 0;
-    video.play().catch(() => {});
-
-    // Browser may block sound until the next user click
-    if (withSound) {
-      video.play().catch(() => {
-        const unmute = () => {
-          video.muted = false;
-          video.play().catch(() => {});
-        };
-        document.addEventListener('click', unmute, { once: true });
-      });
-    }
+    video.play().catch(() => {
+      // Fallback: if autoplay with sound is blocked, play muted
+      video.muted = true;
+      video.play().catch(() => {});
+    });
   }
 
   function checkAllFlipped() {
@@ -308,15 +316,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       card.classList.add('is-flipped');
 
-      if (cardSound) {
-        cardSound.currentTime = 0;
-        cardSound.play().catch(() => {});
-      }
-
-      // Once all cards are flipped, auto-advance to Claim Win after 5–10 seconds
+      // Once all cards are flipped, auto-advance to Claim Win
       if (checkAllFlipped() && winStage === 0) {
         winStage = 1;
-        const delay = Math.floor(Math.random() * 1000) + 2000; // random 3000–4000 ms
+        const delay = Math.floor(Math.random() * 1000) + 2000;
         autoAdvanceTimer = setTimeout(() => {
           if (currentScreen === SCREENS.flipCard) {
             showScreen(SCREENS.claimWin);

@@ -97,7 +97,7 @@
                             <button type="button" aria-label="Select letter R"><img src="assets/images/layer-bg.png" alt=""> <h3>R</h3></button>
                         </div>
                         <div class="chance-heading">
-                            <img src="assets/images/choice-bg.png" alt="">
+                            <img src="assets/images/rm-bg.png" alt="">
                             <span>Today's Chance : 1</span>
                         </div>
                         <div class="claim-now-button">
@@ -114,30 +114,28 @@
             </div>
         </main>
 
-        <!-- Screen 3: Magic Box — 3-step intro video; tap video or "skip" to continue -->
+        <!-- Screen 3: Magic Box — intro video; tap video or "skip" to continue -->
         <main id="screen-magic-box" class="main-app claim-now-main game-screen">
-            <div class="claim-now-content">
-                <a href="#" class="magic-wrapper">
-                    <div class="magic-video">
-                        <div class="video-step">
-                            <video class="video-bg step-1-video" preload="auto" playsinline>
-                                <source src="assets/video/Effect-01.mp4" type="video/mp4">
-                            </video>
-                        </div>
-                    </div>
-                </a>
-                <a href="#" class="skip-button" data-screen="screen-flip-card">Tap anywhere to skip</a>
+            <div class="magic-video-wrap">
+                <div class="video-step">
+                    <video class="video-bg step-1-video" preload="auto" playsinline>
+                        <source src="assets/video/oepn-box-1.mp4" type="video/mp4">
+                    </video>
+                </div>
             </div>
+            <a href="#" class="magic-wrapper" aria-label="Tap to continue"></a>
+            <a href="#" class="skip-button" data-screen="screen-flip-card">Tap anywhere to skip</a>
         </main>
 
-        <!-- Screen 4: Flip Cards — tap each card, then tap screen twice to reveal win -->
+        <!-- Screen 4: Flip Cards — tap each card, then auto advance to win -->
         <main id="screen-flip-card" class="main-app cards-main game-screen">
-            <video class="video-bg" id="myVideoTwo" autoplay loop playsinline muted>
+            <video class="video-bg" id="myVideoTwo" autoplay loop playsinline>
                 <source src="assets/video/background-03.mp4" type="video/mp4">
             </video>
             <div class="flip-cards-wrapper full-height">
                 <div class="card-box">
                     <div class="flip-cards-wrap">
+                        <div class="card-entrance-wrap">
                         <div class="flip-card-single">
                             <div class="card-front">
                                 <img src="assets/images/card-front-j.png" alt="">
@@ -147,6 +145,8 @@
                                 <h2>R</h2>
                             </div>
                         </div>
+                        </div>
+                        <div class="card-entrance-wrap">
                         <div class="flip-card-single">
                             <div class="card-front">
                                 <img src="assets/images/card-front-o.png" alt="">
@@ -156,8 +156,10 @@
                                 <h2>M</h2>
                             </div>
                         </div>
+                        </div>
                     </div>
                     <div class="flip-cards-wrap">
+                        <div class="card-entrance-wrap">
                         <div class="flip-card-single">
                             <div class="card-front">
                                 <img src="assets/images/card-front-k.png" alt="">
@@ -167,6 +169,8 @@
                                 <h2>8</h2>
                             </div>
                         </div>
+                        </div>
+                        <div class="card-entrance-wrap">
                         <div class="flip-card-single">
                             <div class="card-front">
                                 <img src="assets/images/card-front-e.png" alt="">
@@ -176,6 +180,8 @@
                                 <h2>1</h2>
                             </div>
                         </div>
+                        </div>
+                        <div class="card-entrance-wrap">
                         <div class="flip-card-single">
                             <div class="card-front">
                                 <img src="assets/images/card-front-r.png" alt="">
@@ -185,6 +191,7 @@
                                 <h2>9</h2>
                             </div>
                         </div>
+                        </div>
                     </div>
                 </div>
                 <a href="#" class="skip-button">Tap each card to see result</a>
@@ -193,7 +200,7 @@
 
         <!-- Screen 5: Claim Win — tap Claim Now to return home -->
         <main id="screen-claim-win" class="main-app claim-now-main claim-win game-screen">
-            <video class="video-bg video-win-bg" autoplay loop muted playsinline>
+            <video class="video-bg video-win-bg" autoplay loop playsinline>
                 <source src="assets/video/background-03.mp4" type="video/mp4">
             </video>
             <div class="claim-now-content">

@@ -588,12 +588,12 @@ span.time-text {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    margin-bottom: 15px;
+    gap: 13px;
+    margin-bottom: 13px;
 }
 .flip-card-single {
-    width: 100px;
-    height: 164px;
+    width: 106px;
+    height: 180px;
     position: relative;
     cursor: pointer;
     perspective: 1000px;
@@ -601,6 +601,9 @@ span.time-text {
     transition: transform 0.6s cubic-bezier(0.4, 0, 0.1, 1);
     touch-action: manipulation;
     user-select: none;
+}
+.flip-cards-wrap:last-child{
+    margin-bottom: 0;
 }
   
   /* Trigger rotation class */
@@ -797,18 +800,10 @@ img.rm-bg {
 }
 
 
-.video-step{
-    display:none;
-  }
-  
-  .video-step.active{
-    display:block;
-  }
+/* video-step is now managed inside .magic-video-wrap — see those rules above */
 
 
-  .card-box {
-    /* no extra animation — screen fade handles the entrance */
-  }
+  /* card-box opacity is managed by screen 3→4 transition rules above */
 
 .claim-button a {
     width: 310px;
@@ -901,11 +896,107 @@ a.close_icon {
     width: 100%;
 }
 
-.magic-wrapper{
-    display: inline-block;
+/* ═══════════════════════════════════════════════
+   SCREEN 3 → SCREEN 4 SEAMLESS TRANSITION
+   Strategy: both screens overlap at z-index 9/10,
+   screen 3 background fades out while screen 4
+   background fades in — cards stay fixed in center.
+   No scale, no movement, no gap.
+═══════════════════════════════════════════════ */
+
+/* Screen 3 leaving: only the video fades — no scale, no movement */
+#screen-magic-box.leaving {
+    opacity: 0;
+    transition: opacity 0.6s ease,
+                visibility 0s linear 0.6s;
+}
+
+/* Screen 4 entering: whole screen crossfades in */
+#screen-flip-card.active {
+    animation: none;
+    transition: opacity 0.6s ease,
+                visibility 0s linear 0s;
+}
+
+/* card-box: always visible when screen 4 is active — no delayed pop-in */
+#screen-flip-card .card-box {
+    opacity: 1;
+    transition: none;
+    margin-top: 10px;
+}
+
+#screen-flip-card.active .card-box {
+    opacity: 1;
+    transition: none;
+}
+
+/* Cards entrance: animate the wrapper, NOT the card itself
+   so the flip transition on .flip-card-single is never blocked */
+#screen-flip-card .card-entrance-wrap {
+    opacity: 0;
+    transform: perspective(800px) rotateY(180deg);
+}
+
+#screen-flip-card.active .card-entrance-wrap {
+    animation: cardFullFlip 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.05s both;
+}
+
+@keyframes cardFullFlip {
+    0% {
+        opacity: 0;
+        transform: perspective(800px) rotateY(180deg);
+    }
+    40% {
+        opacity: 1;
+    }
+    85% {
+        transform: perspective(800px) rotateY(-12deg);
+    }
+    100% {
+        opacity: 1;
+        transform: perspective(800px) rotateY(0deg);
+    }
+}
+
+
+/* Magic box full-screen video wrapper — matches screen 4 layout exactly */
+.magic-video-wrap {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.magic-video-wrap .video-step {
+    position: absolute;
+    inset: 0;
+    display: none;
+}
+
+.magic-video-wrap .video-step.active {
+    display: block;
+}
+
+.magic-video-wrap .video-bg {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
-    cursor: normal;
+    object-fit: contain;
+    z-index: 0;
+    background-color: #000;
+}
+
+/* Magic wrapper covers the whole screen for tap-to-skip */
+.magic-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: block;
+    width: 100%;
+    height: 100%;
 }
 
 
@@ -960,8 +1051,3 @@ a.close_icon {
     z-index: -99;
 }
 
-.card-box {
-    transition: .3s;
-    transform: scale(1.05);
-    padding-top: 30px;
-}
