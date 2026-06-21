@@ -588,12 +588,11 @@ span.time-text {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 13px;
-    margin-bottom: 13px;
+    gap: 11.5px 12.5px;
 }
 .flip-card-single {
-    width: 106px;
-    height: 180px;
+    width: 102px;
+    height: 174px;
     position: relative;
     cursor: pointer;
     perspective: 1000px;
@@ -601,6 +600,7 @@ span.time-text {
     transition: transform 0.6s cubic-bezier(0.4, 0, 0.1, 1);
     touch-action: manipulation;
     user-select: none;
+    
 }
 .flip-cards-wrap:last-child{
     margin-bottom: 0;
@@ -638,6 +638,11 @@ span.time-text {
   .card-back {
     transform: rotateY(180deg); 
     position: relative; 
+  }
+  .card-wrap-top{
+    position: relative;
+    top: -12px;
+    left: -4px;
   }
   
   /* Center text (R, M, 8, 1, 9) inside the cards */
@@ -926,7 +931,6 @@ a.close_icon {
 #screen-flip-card .card-box {
     opacity: 1;
     transition: none;
-    margin-top: 10px;
 }
 
 #screen-flip-card.active .card-box {
@@ -934,31 +938,13 @@ a.close_icon {
     transition: none;
 }
 
-/* Cards entrance: wrapper animates, flip-card-single stays clean for click flip */
+/* Cards entrance: no animation — cards appear instantly with screen */
 #screen-flip-card .card-entrance-wrap {
-    opacity: 0;
-    transform: perspective(800px) rotateY(180deg);
+    opacity: 1;
 }
 
 #screen-flip-card.active .card-entrance-wrap {
-    animation: cardFullFlip 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.05s both;
-}
-
-@keyframes cardFullFlip {
-    0% {
-        opacity: 0;
-        transform: perspective(800px) rotateY(180deg);
-    }
-    40% {
-        opacity: 1;
-    }
-    85% {
-        transform: perspective(800px) rotateY(-12deg);
-    }
-    100% {
-        opacity: 1;
-        transform: perspective(800px) rotateY(0deg);
-    }
+    animation: none;
 }
 
 
