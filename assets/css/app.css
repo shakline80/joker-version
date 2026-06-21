@@ -904,6 +904,10 @@ a.close_icon {
    No scale, no movement, no gap.
 ═══════════════════════════════════════════════ */
 
+/* ═══════════════════════════════════════════════
+   SCREEN 3 → SCREEN 4 SEAMLESS TRANSITION
+═══════════════════════════════════════════════ */
+
 /* Screen 3 leaving: only the video fades — no scale, no movement */
 #screen-magic-box.leaving {
     opacity: 0;
@@ -918,7 +922,7 @@ a.close_icon {
                 visibility 0s linear 0s;
 }
 
-/* card-box: always visible when screen 4 is active — no delayed pop-in */
+/* card-box always visible */
 #screen-flip-card .card-box {
     opacity: 1;
     transition: none;
@@ -930,8 +934,7 @@ a.close_icon {
     transition: none;
 }
 
-/* Cards entrance: animate the wrapper, NOT the card itself
-   so the flip transition on .flip-card-single is never blocked */
+/* Cards entrance: wrapper animates, flip-card-single stays clean for click flip */
 #screen-flip-card .card-entrance-wrap {
     opacity: 0;
     transform: perspective(800px) rotateY(180deg);

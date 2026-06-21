@@ -221,7 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
     steps[0]?.classList.add('active');
 
     video.currentTime = 0;
-    video.playbackRate = MAGIC_PLAYBACK_RATE;
     video.play().catch(() => {});
 
     video.onended = () => {
