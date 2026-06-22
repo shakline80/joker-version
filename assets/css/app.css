@@ -95,8 +95,8 @@ h6{
     visibility: hidden;
     pointer-events: none;
     z-index: 1;
-    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-                visibility 0s linear 0.6s;
+    transition: opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1),
+                visibility 0s linear 1.5s;
 }
 
 .game-screen.active {
@@ -104,7 +104,7 @@ h6{
     visibility: visible;
     pointer-events: auto;
     z-index: 10;
-    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transition: opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1),
                 visibility 0s linear 0s;
 }
 
@@ -113,8 +113,8 @@ h6{
     visibility: hidden;
     pointer-events: none;
     z-index: 9;
-    transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-                visibility 0s linear 0.45s;
+    transition: opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1),
+                visibility 0s linear 1.5s;
 }
 
 /* Screen 2 (height-reward) video pre-warms: keep it invisible but rendered
@@ -935,36 +935,7 @@ a.close_icon {
    SCREEN 3 → SCREEN 4 SEAMLESS TRANSITION
 ═══════════════════════════════════════════════ */
 
-/* Screen 3 → Screen 4: no fade transition (handled as instant swap in JS) */
-#screen-magic-box.leaving-to-flipcard {
-    opacity: 0;
-    transition: none !important;
-}
 
-#screen-flip-card.entering-from-magic {
-    opacity: 1;
-    transition: none !important;
-}
-
-/* card-box always visible */
-#screen-flip-card .card-box {
-    opacity: 1;
-    transition: none;
-}
-
-#screen-flip-card.active .card-box {
-    opacity: 1;
-    transition: none;
-}
-
-/* Cards entrance: no animation — cards appear instantly with screen */
-#screen-flip-card .card-entrance-wrap {
-    opacity: 1;
-}
-
-#screen-flip-card.active .card-entrance-wrap {
-    animation: none;
-}
 
 
 /* Magic box full-screen video wrapper — matches screen 4 layout exactly */

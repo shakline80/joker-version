@@ -117,8 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /**
    * Crossfade screens using the base .game-screen opacity transition.
-   * Screen 3 → Screen 4 is an instant swap (no fade) so the card
-   * entrance animation plays cleanly without a fade gap.
+   * All transitions fade out over 1.5s while the next screen fades in over 1.5s.
    */
   function showScreen(screenId, options = {}) {
     if (screenId === currentScreen) return;
@@ -126,8 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const outgoing = document.getElementById(currentScreen);
     const nextScreen = document.getElementById(screenId);
     if (!nextScreen) return;
-
-    const fromMagicToFlip = (currentScreen === SCREENS.magicBox && screenId === SCREENS.flipCard);
 
     currentScreen = screenId;
 
@@ -138,60 +135,43 @@ document.addEventListener('DOMContentLoaded', () => {
         if (v) { v.muted = !(options.withSound); v.currentTime = 0; v.play().catch(() => {}); }
       }
 
-      if (fromMagicToFlip) {
-        // Instant swap — no fade, special classes suppress transition
-        if (outgoing) {
-          outgoing.classList.remove('active');
-          outgoing.classList.add('leaving-to-flipcard');
-          setTimeout(() => outgoing.classList.remove('leaving-to-flipcard'), 50);
-        }
-        nextScreen.classList.add('no-transition', 'entering-from-magic', 'active');
-        requestAnimationFrame(() => {
-          nextScreen.classList.remove('no-transition', 'entering-from-magic');
-        });
-        document.body.classList.toggle('with-menubar', false);
-        winStage = 0;
-        initFlipCardVideo();
-      } else {
-        // Standard fade in / fade out for all other transitions
-        if (outgoing) {
-          outgoing.classList.remove('active');
-          outgoing.classList.add('leaving');
-          outgoing.addEventListener('transitionend', () => {
-            outgoing.classList.remove('leaving');
-          }, { once: true });
-        }
+      if (outgoing) {
+        outgoing.classList.remove('active');
+        outgoing.classList.add('leaving');
+        outgoing.addEventListener('transitionend', () => {
+          outgoing.classList.remove('leaving');
+        }, { once: true });
+      }
 
-        nextScreen.classList.add('active');
-        document.body.classList.toggle('with-menubar', screenId === SCREENS.home);
+      nextScreen.classList.add('active');
+      document.body.classList.toggle('with-menubar', screenId === SCREENS.home);
 
-        switch (screenId) {
-          case SCREENS.home:
-            resetGameState();
-            break;
-          case SCREENS.heightReward:
-            initHeightRewardVideo(Boolean(options.withSound));
-            break;
-          case SCREENS.magicBox:
-            startMagicSequence();
-            break;
-          case SCREENS.flipCard:
-            winStage = 0;
-            initFlipCardVideo();
-            break;
-          case SCREENS.claimWin:
-            playWinSound();
-            const winVideo = nextScreen.querySelector('.video-win-bg');
-            if (winVideo) {
-              winVideo.muted = false;
-              winVideo.currentTime = 0;
-              winVideo.play().catch(() => {
-                winVideo.muted = true;
-                winVideo.play().catch(() => {});
-              });
-            }
-            break;
-        }
+      switch (screenId) {
+        case SCREENS.home:
+          resetGameState();
+          break;
+        case SCREENS.heightReward:
+          initHeightRewardVideo(Boolean(options.withSound));
+          break;
+        case SCREENS.magicBox:
+          startMagicSequence();
+          break;
+        case SCREENS.flipCard:
+          winStage = 0;
+          initFlipCardVideo();
+          break;
+        case SCREENS.claimWin:
+          playWinSound();
+          const winVideo = nextScreen.querySelector('.video-win-bg');
+          if (winVideo) {
+            winVideo.muted = false;
+            winVideo.currentTime = 0;
+            winVideo.play().catch(() => {
+              winVideo.muted = true;
+              winVideo.play().catch(() => {});
+            });
+          }
+          break;
       }
     });
   }
@@ -299,39 +279,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         navLink.classList.add('is-opening');
 
-        // Black overlay fades in over 0.6s
-        const overlay = document.getElementById('global-overlay');
-        if (overlay) overlay.classList.add('is-fading-in');
+        showScreen(SCREENS.magicBox);
 
-        // After 0.6s overlay is fully black → switch to screen 3 behind it
         setTimeout(() => {
           navLink.classList.remove('is-opening');
-
-          // Show screen 3 instantly (no fade) — overlay is covering it
-          const magicScreen = document.getElementById(SCREENS.magicBox);
-          if (magicScreen) magicScreen.classList.add('no-transition');
-
-          showScreen(SCREENS.magicBox);
-
-          // Overlay fades out revealing screen 3 smoothly
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              if (magicScreen) magicScreen.classList.remove('no-transition');
-              if (overlay) {
-                overlay.classList.remove('is-fading-in');
-                overlay.classList.add('is-fading-out');
-                setTimeout(() => overlay.classList.remove('is-fading-out'), 600);
-              }
-            });
-          });
-        }, 600);
+        }, 300);
 
         return;
       }
 
-      // Screen 1 → Screen 2: use overlay transition
       if (currentScreen === SCREENS.home && navLink.dataset.screen === SCREENS.heightReward) {
-        showScreenWithOverlay(navLink.dataset.screen, {
+        showScreen(navLink.dataset.screen, {
           withSound: navLink.dataset.withSound === 'true',
         });
         return;
@@ -391,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const delay = Math.floor(Math.random() * 1000) + 2000;
         autoAdvanceTimer = setTimeout(() => {
           if (currentScreen === SCREENS.flipCard) {
-            showScreenWithOverlay(SCREENS.claimWin);
+            showScreen(SCREENS.claimWin);
           }
         }, delay);
       }
