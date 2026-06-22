@@ -24,8 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
     claimWin: 'screen-claim-win',
   };
 
-  const MAGIC_PLAYBACK_RATE = 4.0; // Magic box videos play 4× faster
-
   // --- State ---
   let currentScreen = SCREENS.home;
   let winStage = 0;           // Flip-card progress after all cards are revealed
@@ -83,15 +81,47 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * Crossfade screens. For the magic→flipcard transition, screen 4 is
-   * made visible first (z-index 10) then screen 3 fades out behind it —
-   * both overlap at the same position so the card area looks continuous.
+   * Switch screens with the same 0.9s black overlay fade used by OPEN NOW.
+   * overlay fades in → switch screen (instant, hidden behind overlay) → overlay fades out.
    */
-  function showScreen(screenId, options = {}) {
+  function showScreenWithOverlay(screenId, options = {}) {
     if (screenId === currentScreen) return;
 
     abortMagicSequence();
     pauseAllMedia();
+
+    const nextScreen = document.getElementById(screenId);
+    if (!nextScreen) return;
+
+    const overlay = document.getElementById('global-overlay');
+
+    // Phase 1: fade overlay in (0.9s)
+    if (overlay) overlay.classList.add('is-fading-in');
+
+    // Phase 2: after overlay is fully opaque, switch screen behind it
+    setTimeout(() => {
+      showScreen(screenId, options);
+
+      // Phase 3: fade overlay out revealing the new screen
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (overlay) {
+            overlay.classList.remove('is-fading-in');
+            overlay.classList.add('is-fading-out');
+            setTimeout(() => overlay.classList.remove('is-fading-out'), 400);
+          }
+        });
+      });
+    }, 400);
+  }
+
+  /**
+   * Crossfade screens using the base .game-screen opacity transition.
+   * Screen 3 → Screen 4 is an instant swap (no fade) so the card
+   * entrance animation plays cleanly without a fade gap.
+   */
+  function showScreen(screenId, options = {}) {
+    if (screenId === currentScreen) return;
 
     const outgoing = document.getElementById(currentScreen);
     const nextScreen = document.getElementById(screenId);
@@ -102,27 +132,28 @@ document.addEventListener('DOMContentLoaded', () => {
     currentScreen = screenId;
 
     requestAnimationFrame(() => {
+      // Pre-warm screen 2 video
       if (screenId === SCREENS.heightReward) {
         const v = document.getElementById('myVideo');
         if (v) { v.muted = !(options.withSound); v.currentTime = 0; v.play().catch(() => {}); }
       }
 
       if (fromMagicToFlip) {
-        // Screen 4 activates immediately at z-index 10 (cards visible)
-        nextScreen.classList.add('active');
-        initFlipCardVideo();
-        winStage = 0;
-
-        // Screen 3 fades out behind screen 4 — seamless overlap
+        // Instant swap — no fade, special classes suppress transition
         if (outgoing) {
           outgoing.classList.remove('active');
-          outgoing.classList.add('leaving');
-          outgoing.addEventListener('transitionend', () => {
-            outgoing.classList.remove('leaving');
-          }, { once: true });
+          outgoing.classList.add('leaving-to-flipcard');
+          setTimeout(() => outgoing.classList.remove('leaving-to-flipcard'), 50);
         }
+        nextScreen.classList.add('no-transition', 'entering-from-magic', 'active');
+        requestAnimationFrame(() => {
+          nextScreen.classList.remove('no-transition', 'entering-from-magic');
+        });
+        document.body.classList.toggle('with-menubar', false);
+        winStage = 0;
+        initFlipCardVideo();
       } else {
-        // Normal crossfade for all other screen transitions
+        // Standard fade in / fade out for all other transitions
         if (outgoing) {
           outgoing.classList.remove('active');
           outgoing.classList.add('leaving');
@@ -254,16 +285,55 @@ document.addEventListener('DOMContentLoaded', () => {
     winSound.play().catch(() => {});
   }
 
-  // --- Global click handler: navigation + flip-card win progression ---
+  // --- Global click handler ---
   document.addEventListener('click', (e) => {
 
-    // Any link with data-screen switches screens
     const navLink = e.target.closest('[data-screen]');
     if (navLink) {
       e.preventDefault();
 
-      // OPEN NOW stays disabled until all J-O-K-E-R letters are selected
-      if (navLink.classList.contains('open-button') && !navLink.classList.contains('active')) {
+      // OPEN NOW — disabled until all J-O-K-E-R letters selected
+      if (navLink.classList.contains('open-button')) {
+        if (!navLink.classList.contains('active')) return;
+        if (navLink.classList.contains('is-opening')) return;
+
+        navLink.classList.add('is-opening');
+
+        // Black overlay fades in over 0.6s
+        const overlay = document.getElementById('global-overlay');
+        if (overlay) overlay.classList.add('is-fading-in');
+
+        // After 0.6s overlay is fully black → switch to screen 3 behind it
+        setTimeout(() => {
+          navLink.classList.remove('is-opening');
+
+          // Show screen 3 instantly (no fade) — overlay is covering it
+          const magicScreen = document.getElementById(SCREENS.magicBox);
+          if (magicScreen) magicScreen.classList.add('no-transition');
+
+          showScreen(SCREENS.magicBox);
+
+          // Overlay fades out revealing screen 3 smoothly
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              if (magicScreen) magicScreen.classList.remove('no-transition');
+              if (overlay) {
+                overlay.classList.remove('is-fading-in');
+                overlay.classList.add('is-fading-out');
+                setTimeout(() => overlay.classList.remove('is-fading-out'), 600);
+              }
+            });
+          });
+        }, 600);
+
+        return;
+      }
+
+      // Screen 1 → Screen 2: use overlay transition
+      if (currentScreen === SCREENS.home && navLink.dataset.screen === SCREENS.heightReward) {
+        showScreenWithOverlay(navLink.dataset.screen, {
+          withSound: navLink.dataset.withSound === 'true',
+        });
         return;
       }
 
@@ -273,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Tap magic video area → skip to flip cards with sound
+    // Tap magic video area → skip to flip cards
     const magicWrapper = e.target.closest('.magic-wrapper');
     if (magicWrapper && currentScreen === SCREENS.magicBox) {
       e.preventDefault();
@@ -315,13 +385,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       card.classList.add('is-flipped');
 
-      // Once all cards are flipped, auto-advance to Claim Win
+      // Once all cards are flipped, auto-advance to Claim Win with overlay
       if (checkAllFlipped() && winStage === 0) {
         winStage = 1;
         const delay = Math.floor(Math.random() * 1000) + 2000;
         autoAdvanceTimer = setTimeout(() => {
           if (currentScreen === SCREENS.flipCard) {
-            showScreen(SCREENS.claimWin);
+            showScreenWithOverlay(SCREENS.claimWin);
           }
         }, delay);
       }

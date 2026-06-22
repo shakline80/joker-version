@@ -848,6 +848,28 @@ img.rm-bg {
     pointer-events: none;
 }
 
+/* Black overlay fades in on top of everything */
+.global-overlay {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.global-overlay.is-fading-in {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.global-overlay.is-fading-out {
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .claim-now-button img {
     filter: grayscale(1);
     transition: 0.3s ease;
@@ -913,18 +935,15 @@ a.close_icon {
    SCREEN 3 → SCREEN 4 SEAMLESS TRANSITION
 ═══════════════════════════════════════════════ */
 
-/* Screen 3 leaving: only the video fades — no scale, no movement */
-#screen-magic-box.leaving {
+/* Screen 3 → Screen 4: no fade transition (handled as instant swap in JS) */
+#screen-magic-box.leaving-to-flipcard {
     opacity: 0;
-    transition: opacity 0.6s ease,
-                visibility 0s linear 0.6s;
+    transition: none !important;
 }
 
-/* Screen 4 entering: whole screen crossfades in */
-#screen-flip-card.active {
-    animation: none;
-    transition: opacity 0.6s ease,
-                visibility 0s linear 0s;
+#screen-flip-card.entering-from-magic {
+    opacity: 1;
+    transition: none !important;
 }
 
 /* card-box always visible */

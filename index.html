@@ -68,7 +68,8 @@
 
         <!-- Screen 2: Height Reward — select J-O-K-E-R, then tap OPEN NOW -->
         <main id="screen-height-reward" class="main-app joker-bg game-screen">
-            <video id="myVideo" class="video-bg" loop playsinline muted>
+        <div class="open-overlay"></div>
+        <video id="myVideo" class="video-bg" loop playsinline muted>
                 <source src="assets/video/Main-Page.mp4" type="video/mp4">
             </video>
             <div class="claim-now-content">
@@ -229,6 +230,9 @@
         <!-- Shared sound effects (used across flip-card and claim-win screens) -->
         <audio id="cardSound" src="assets/video/card-click-solund.wav" preload="auto"></audio>
         <audio id="winSound" src="assets/video/win-sound.mp3" preload="auto"></audio>
+
+        <!-- Global transition overlay — used for OPEN NOW black fade -->
+        <div id="global-overlay" class="global-overlay"></div>
 
         <script src="assets/js/app.js"></script>
     </body>
