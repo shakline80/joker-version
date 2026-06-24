@@ -108,11 +108,11 @@ document.addEventListener('DOMContentLoaded', () => {
           if (overlay) {
             overlay.classList.remove('is-fading-in');
             overlay.classList.add('is-fading-out');
-            setTimeout(() => overlay.classList.remove('is-fading-out'), 400);
+            setTimeout(() => overlay.classList.remove('is-fading-out'), 600);
           }
         });
       });
-    }, 400);
+    }, 600);
   }
 
   /**

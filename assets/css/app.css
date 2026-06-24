@@ -95,8 +95,8 @@ h6{
     visibility: hidden;
     pointer-events: none;
     z-index: 1;
-    transition: opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1),
-                visibility 0s linear 1.5s;
+    transition: opacity 2.5s cubic-bezier(0.22, 1, 0.36, 1),
+                visibility 0s linear 2.5s;
 }
 
 .game-screen.active {
@@ -104,7 +104,7 @@ h6{
     visibility: visible;
     pointer-events: auto;
     z-index: 10;
-    transition: opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1),
+    transition: opacity 2.5s cubic-bezier(0.22, 1, 0.36, 1),
                 visibility 0s linear 0s;
 }
 
@@ -113,8 +113,8 @@ h6{
     visibility: hidden;
     pointer-events: none;
     z-index: 9;
-    transition: opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1),
-                visibility 0s linear 1.5s;
+    transition: opacity 2.5s cubic-bezier(0.22, 1, 0.36, 1),
+                visibility 0s linear 2.5s;
 }
 
 /* Screen 2 (height-reward) video pre-warms: keep it invisible but rendered
@@ -696,7 +696,8 @@ img.joker-box-img{
     align-items: center;
     gap: 12px;
     justify-content: center;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 25px;
 }
 
 .select-joker button {
@@ -708,7 +709,9 @@ img.joker-box-img{
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: .3s;
+    transition: .2s;
+    box-shadow: 0px 0px 0px 0px transparent;
+    border-radius: 100%;
 }
 .select-joker button img {
     width: 100%;
@@ -717,18 +720,21 @@ img.joker-box-img{
     left: 0;
     top: 0;
     z-index: -1;
-    transition: .3s;
+    transition: .2s;
     filter: grayscale(1);
 }
 .select-joker button.selected img {
     filter: unset;
+}
+.select-joker button.selected {
+    box-shadow: 0px 0px 7px 1px #ffcc68;
 }
 
 
 .select-joker button h3{
     margin: 0;
     font-family: "Libre Baskerville", serif;
-    font-size: 26px;
+    font-size: 32px;
     text-transform: uppercase;
     transition: .3s;
     color: #000;
@@ -736,6 +742,35 @@ img.joker-box-img{
 .select-joker .selected h3 {
     color: #fff !important;
 }
+.select-joker .collection-number {
+    position: absolute;
+    font-size: 16px;
+    color: #fff;
+    bottom: -28px;
+    z-index: 99;
+    width: 100%;
+    text-align: center;
+    transition: .3s;
+}
+.select-joker .selected  .collection-number{
+    color: #ffcc68;
+}
+.collection-title{
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 0 8px;
+    justify-content: center;
+}
+.collection-title img {
+    width: 40px;
+}
+.collection-title h4 {
+    font-size: 13px;
+    font-weight: normal;
+    margin: 0;
+}
+
 .joker-bg-img {
     position: absolute;
     left: 0;
@@ -856,18 +891,18 @@ img.rm-bg {
     z-index: 9999;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .global-overlay.is-fading-in {
     opacity: 1;
     pointer-events: auto;
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .global-overlay.is-fading-out {
     opacity: 0;
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .claim-now-button img {
