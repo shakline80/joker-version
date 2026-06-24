@@ -751,6 +751,7 @@ img.joker-box-img{
     width: 100%;
     text-align: center;
     transition: .3s;
+    line-height: 110%;
 }
 .select-joker .selected  .collection-number{
     color: #ffcc68;
