@@ -770,7 +770,17 @@ img.joker-box-img{
     font-weight: normal;
     margin: 0;
 }
-
+.collection-number::after {
+    position: absolute;
+    right: -7px;
+    height: 100%;
+    background: #ffcc68;
+    content: '';
+    width: 1px;
+}
+.select-joker button:last-child .collection-number::after {
+    display: none;
+}
 .joker-bg-img {
     position: absolute;
     left: 0;
